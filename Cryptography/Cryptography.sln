@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29613.14
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Encoding", "Encoding\Encoding.csproj", "{90D33635-E75D-4874-BFA6-78633BEB41C9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{E962DDA6-3C27-489F-AC2C-398A351FEDA1}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{90D33635-E75D-4874-BFA6-78633BEB41C9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{90D33635-E75D-4874-BFA6-78633BEB41C9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{90D33635-E75D-4874-BFA6-78633BEB41C9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{90D33635-E75D-4874-BFA6-78633BEB41C9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E962DDA6-3C27-489F-AC2C-398A351FEDA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E962DDA6-3C27-489F-AC2C-398A351FEDA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E962DDA6-3C27-489F-AC2C-398A351FEDA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E962DDA6-3C27-489F-AC2C-398A351FEDA1}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4E937206-4AE4-499A-A539-AF2BC0B5E29A}
+	EndGlobalSection
+EndGlobal
