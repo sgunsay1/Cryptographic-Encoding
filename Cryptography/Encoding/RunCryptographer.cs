@@ -116,19 +116,16 @@ namespace Cryptography
             Console.WriteLine($"Okay! Next, input your {dimensions}x{dimensions} encoding matrix. " +
                 "Type each row, seperating each number with a blankspace, then hit enter. ");
             Console.WriteLine("For example, for the first row of a 2x2 matrix, type \"1 2\" and press Enter");
-
-            double[] matrix = new double[dimensions * dimensions];
-            int[] tempArr = new int[dimensions];
-            for (int i = 0; i < dimensions; i++)
-            {
-                tempArr = GetRowInput(dimensions);
-                for (int j = 0; j < dimensions; j++)
-                    matrix[i*dimensions + j] = tempArr[j];
-            }
+            
+            //Instantiate matrix with all zero entries
+            Matrix<Double> encodingMatrix = Matrix<Double>.Build.Dense(dimensions, dimensions);
+            
+            //SEt each row of encoding matrix
+            for (int rowIndex = 0; rowIndex < dimensions; rowIndex++)
+                encodingMatrix.SetRow(rowIndex, GetRowInput(dimensions));
 
             Console.WriteLine("\n\n\nGreat! Your encoding matrix is: ");
-            MatrixToString(dimensions, matrix);
-            Matrix<Double> encodingMatrix = Matrix<Double>.Build.Dense(dimensions, dimensions, matrix).Transpose();
+            MatrixToString(dimensions, encodingMatrix);
 
             return encodingMatrix;
         }
@@ -149,7 +146,7 @@ namespace Cryptography
 
 
         #region Helper Methods
-        private static int[] GetRowInput(int dimensions)
+        private static double[] GetRowInput(int dimensions)
         {
             string input = Console.ReadLine();
             string[] arr = input.Trim().Split(' ');
@@ -159,12 +156,12 @@ namespace Cryptography
                 return GetRowInput(dimensions);
             }
 
-            int[] rowNums = new int[dimensions];
+            double[] rowNums = new double[dimensions];
             int currColIndex = 0;
             foreach(var el in arr)
             {
-                int val;
-                if(!int.TryParse(el.Trim(), out val))
+                double val;
+                if(!double.TryParse(el.Trim(), out val))
                 {
                     Console.WriteLine("Invalid format. Try inputting the row again. Only separate numbers by \",\"");
                     return GetRowInput(dimensions);
@@ -173,8 +170,6 @@ namespace Cryptography
                 rowNums[currColIndex++] = val;            
                
             }
-
-            Console.WriteLine($"Inputted {rowNums.ToString()}");
 
             return rowNums;
         }
@@ -192,14 +187,15 @@ namespace Cryptography
             return mod;
         }
 
-        private static void MatrixToString(int dimensions, double[] matrix)
+        private static void MatrixToString(int dimensions, Matrix<Double> matrix)
         {
             Console.WriteLine("[");
-            for (int i = 0; i < dimensions; i++)
-            {
+            foreach(var row in matrix.ToRowArrays())
+            { 
                 Console.Write("  [");
-                for (int j = 0; j < dimensions; j++)
-                    Console.Write(matrix[i * dimensions + j] + "  ");
+                foreach (var el in row)
+                    Console.Write(" " + el + " ");
+
                 Console.WriteLine("]");
             }
             Console.WriteLine("]");
