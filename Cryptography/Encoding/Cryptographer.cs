@@ -6,16 +6,20 @@ namespace Cryptography
 {
     class Cryptographer
     {
+
+        /// <summary>
+        /// Encodes an inputted message using the modval and encoding matrix
+        /// </summary>
         public string Encode(string message, Matrix<Double> encodingMatrix, int modVal, bool isLastDecode)
         {
             char[] chars = message.ToUpper().ToCharArray();
             int numRows = encodingMatrix.RowCount;
             int numCols = chars.Length / numRows;
-            
+
             if (chars.Length % numRows != 0)
                 Console.WriteLine("Error: Message length is not a multiple of your matrix dimension....");
-           
-            double[] numRepresentation = GetNumEquivalent(chars);
+
+            double[] numRepresentation = ConvertToNumbers(chars);
 
             //Multiply by encoding matrix
             Matrix<Double> msgMatrix = Matrix<Double>.Build.Dense(numRows, numCols, numRepresentation);
@@ -24,37 +28,42 @@ namespace Cryptography
             Console.WriteLine("The Resulting number matrix is:");
             MatrixToString(encodingMatrix.ColumnCount, resultMatrix);
 
-
-            //if (isLastDecode) //Todo fix
-            //    modVal = 29;
-
             //Mod each element and reconvert back to strings
             StringBuilder sb = new StringBuilder();
             foreach (var col in resultMatrix.ToColumnArrays())
             {
                 foreach(var el in col)
                 {
-                    int valToFetch = (int)el % modVal;
+                    int valToFetch = (int)Math.Round(el) % modVal;
                     sb.Append(GetCharFromIndex(valToFetch));
                 }
-                    
             }
 
             return sb.ToString();
         }
 
-        
-
+        /// <summary>
+        /// Decodes a given message based on the original encoding matrix
+        /// </summary>
         public string Decode(string message, Matrix<Double> encodingMatrix, int modVal, bool isLastDecode)
         {
-            Matrix<Double> decodingMatrix = GetInverseMatrix(encodingMatrix, modVal);
-            
+            Matrix<Double> decodingMatrix = GetDecodingMatrix(encodingMatrix, modVal);
+
             return Encode(message, decodingMatrix, modVal, isLastDecode);
         }
 
+        /// <summary>
+        /// Makes sure there is a modular multiplicitive inverse matrix
+        /// </summary>
+        public bool IsValidEncodingMatrix(Matrix<Double> matrix, int modVal)
+        {
+            return getModInverse(matrix.Determinant(), modVal) != -1;
+        }
 
-
-        private double[] GetNumEquivalent(char[] chars)
+        /// <summary>
+        /// Converts a Char array to a number array
+        /// </summary>
+        private double[] ConvertToNumbers(char[] chars)
         {
             // Convert the message into a list of numerical equivalents
             double[] numRepresentation = new double[chars.Length];
@@ -70,48 +79,61 @@ namespace Cryptography
 
             return numRepresentation;
         }
-        private Matrix<Double> GetInverseMatrix(Matrix<Double> startMatrix, int modVal)
-        {
 
+        /// <summary>
+        /// Finds the decoding matrix based off of the encoding matrix and original mod value
+        /// </summary>
+        private Matrix<Double> GetDecodingMatrix(Matrix<Double> encodingMatrix, int modVal)
+        {
             ///
             /// See https://www.youtube.com/watch?v=JnIHfnaY-_w&t=539s for an explanation of this algorithm
             ///
-            double det = startMatrix.Determinant();
+            double det = encodingMatrix.Determinant();
             int modInverse = getModInverse(det, (double)modVal);
+            int dimensions = encodingMatrix.RowCount;
 
-
-            //int dimensions = startMatrix.RowCount;
-            
-            //Make sure math is correct
+            ////Make sure math is correct
             //Console.WriteLine("\n\nThe inverse matrix is:");
-            //MatrixToString(dimensions, startMatrix.Inverse());
-
+            //MatrixToString(dimensions, encodingMatrix.Inverse());
+            //Matrix<Double> inverse = encodingMatrix.Inverse();
+            //MatrixToString(dimensions, inverse);
             //Console.WriteLine("\n\nThe inverse matrix after multiplication by determinate:");
-            //MatrixToString(dimensions, startMatrix.Inverse().Multiply(det));
-
+            //MatrixToString(dimensions, encodingMatrix.Inverse().Multiply(det));
             //Console.WriteLine("\n\nThe inverse matrix after Modulus:");
-            //MatrixToString(dimensions, startMatrix.Inverse().Multiply(det).Modulus(modVal));
-
+            //MatrixToString(dimensions, encodingMatrix.Inverse().Multiply(det).Modulus(modVal));
             //Console.WriteLine("\n\nThe inverse matrix after multiplication by Modular multiplicative inverse:");
-            //MatrixToString(dimensions, startMatrix.Inverse().Multiply(det).Modulus(modVal).Multiply(modInverse));
+            //MatrixToString(dimensions, encodingMatrix.Inverse().Multiply(det).Modulus(modVal).Multiply(modInverse));
+            Console.WriteLine("\n\nThe Decoding Matrix is:");
+            MatrixToString(dimensions, encodingMatrix.Inverse().Multiply(det).Modulus(modVal).Multiply(modInverse).Modulus(modVal));
 
-            //Console.WriteLine("\n\nThe inverse matrix after one more mod");
-            //MatrixToString(dimensions, startMatrix.Inverse().Multiply(det).Modulus(modVal).Multiply(modInverse).Modulus(modVal));
-
-            Matrix<Double> decodingMatrix = startMatrix.Inverse().Multiply(det).Modulus(modVal).Multiply(modInverse).Modulus(modVal);
+            Matrix<Double> decodingMatrix = encodingMatrix.Inverse().Multiply(det).Modulus(modVal).Multiply(modInverse).Modulus(modVal);
             return decodingMatrix;
-
         }
 
+        /// <summary>
+        /// Calculates Modular Multiplicitive inverse, or returns -1 if there isn't an inverse
+        /// </summary>
         private int getModInverse(double startVal, double modVal)
         {
-            startVal = startVal % modVal;
+            startVal =  Math.Round(startVal);
+            startVal = MathMod((int)startVal, (int)modVal);
             for (int x = 1; x < modVal; x++)
                 if ((startVal * x) % modVal == 1)
                     return x;
-            return 1;
+            return -1; //inverse doesn't exist
         }
 
+        /// <summary>
+        /// Finds the modulo of any given val
+        /// </summary>
+        private int MathMod(int val, int mod)
+        {
+            return (Math.Abs(val * mod) + val) % mod;
+        }
+
+        /// <summary>
+        /// Converts a char into a numerical equivalent
+        /// </summary>
         private int GetIndexFromChar(char c)
         {
             switch (c)
@@ -149,6 +171,9 @@ namespace Cryptography
             }
         }
 
+        /// <summary>
+        /// Converts a number into its char equivalent
+        /// </summary>
         private char GetCharFromIndex(int i)
         {
             char[] charList = {
@@ -160,6 +185,9 @@ namespace Cryptography
             return charList[i];
         }
 
+        /// <summary>
+        /// Prints a representation of a matrix to the console
+        /// </summary>
         private static void MatrixToString(int dimensions, Matrix<Double> matrix)
         {
             Console.WriteLine("[");
