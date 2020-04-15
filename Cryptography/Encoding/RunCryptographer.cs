@@ -16,7 +16,7 @@ namespace Cryptography
 
         private static void RunProgramFromBeginning()
         {
-            Console.WriteLine("Welcome to your Cryptography generator.\n");
+            Console.WriteLine("\n\nWelcome to your Cryptography generator.\n");
             int dimensions = PromptDimensions();
 
             Console.WriteLine("\n\nNext, just put in the number that you want to mod each element in your matrix by: ");
@@ -125,7 +125,7 @@ namespace Cryptography
             bool canDecode = encodingMatrices.Count > 0;
 
             string options = canDecode ? $"encode/decode/restart/exit" : "encode/restart/exit" ;
-            Console.WriteLine($"What would you like to do with this message? {options}");
+            Console.WriteLine($"\n\nWhat would you like to do with this message? {options}");
             string nextAction = PromptNextAction(canDecode);
 
             if (nextAction.Equals("exit"))
@@ -136,7 +136,7 @@ namespace Cryptography
 
             else if (nextAction.Equals("encode"))
             {
-                Console.WriteLine("Okay! First, just put in the number that you want to mod each element by: ");
+                Console.WriteLine("\n\nOkay! First, just put in the number that you want to mod each element by: ");
                 int modVal = PromptMod();
                 Matrix<Double> newEncodingMatrix = PromptEncodingMatrix(dimensions, modVal);
 
@@ -167,6 +167,7 @@ namespace Cryptography
             switch (input)
             {
                 case "encode":
+                case "restart":
                 case "exit":
                     return input;
                 case "decode":

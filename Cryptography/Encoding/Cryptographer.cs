@@ -25,7 +25,7 @@ namespace Cryptography
             Matrix<Double> msgMatrix = Matrix<Double>.Build.Dense(numRows, numCols, numRepresentation);
             Matrix<Double> resultMatrix = encodingMatrix.Multiply(msgMatrix);
 
-            Console.WriteLine("The Resulting number matrix is:");
+            Console.WriteLine("\n\nThe Resulting number matrix is:");
             MatrixToString(encodingMatrix.ColumnCount, resultMatrix);
 
             //Mod each element and reconvert back to strings
